@@ -37,7 +37,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 
     implementation "androidx.appcompat:appcompat:$versions.androidSupport"
@@ -57,4 +56,5 @@ dependencies {
 
     androidTestImplementation project(':kaspresso')
     androidTestImplementation "com.agoda.kakao:kakao:$versions.kakao"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
