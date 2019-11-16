@@ -16,6 +16,7 @@ android {
         versionCode Integer.parseInt(pKaspressampleCode)
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument("listener", "com.kaspersky.kaspresso.runner.MyListener")
 
         sourceSets {
             main.java.srcDirs += 'src/main/kotlin'
