@@ -30,6 +30,8 @@ class AllureReportWriter(
         val stepsJson = gson.toJson(steps)
 
         // TODO -> can we avoid static?
-        MyListener.instance?.attachStepsJson(stepsJson)
+
+
+        MyListener.instance.attachStepsJson(stepsJson)
     }
 }
