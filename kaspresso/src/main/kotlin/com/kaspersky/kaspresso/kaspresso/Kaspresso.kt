@@ -74,17 +74,20 @@ import com.kaspersky.kaspresso.params.FlakySafetyParams
 import com.kaspersky.kaspresso.params.Params
 import com.kaspersky.kaspresso.params.StepParams
 import com.kaspersky.kaspresso.report.impl.AllureReportWriter
-import com.malinskiy.marathon.steps.StepsResultsProducerImpl
+import com.kaspersky.kaspresso.testcases.models.TestIdentifier
+import com.malinsky.marathon.core.steps.StepsResultsConsumer
 
 /**
  * The storage of all Kaspresso preferences and entities, such as [AdbServer], [Device] and different interceptors.
  */
 data class Kaspresso(
+    internal val testIdentifier: TestIdentifier,
     internal val libLogger: UiTestLogger,
     internal val testLogger: UiTestLogger,
     internal val adbServer: AdbServer,
     internal val device: Device,
     internal val params: Params,
+    internal val stepsResultsConsumers: List<StepsResultsConsumer>,
     internal val viewActionWatcherInterceptors: List<ViewActionWatcherInterceptor>,
     internal val viewAssertionWatcherInterceptors: List<ViewAssertionWatcherInterceptor>,
     internal val atomWatcherInterceptors: List<AtomWatcherInterceptor>,
@@ -161,15 +164,23 @@ data class Kaspresso(
                     testRunWatcherInterceptors = mutableListOf(
                         TestRunLoggerWatcherInterceptor(libLogger),
                         TestRunnerScreenshotWatcherInterceptor(screenshots),
-                        BuildStepReportWatcherInterceptor(
-                            AllureReportWriter(StepsResultsProducerImpl())
-                        )
+                        BuildStepReportWatcherInterceptor(AllureReportWriter(stepsResultsConsumers))
                     )
 
                     failureHandler = LoggingFailureHandler(libLogger)
                 }
             }
         }
+
+        /**
+         * Holds unique identifier for current test case.
+         */
+        var testIdentifier: TestIdentifier = TestIdentifier("", "")
+
+        /**
+         * Holds the list of StepsResultsConsumers
+         */
+        var stepsResultsConsumers: List<StepsResultsConsumer> = emptyList()
 
         /**
          * Holds an implementation of [UiTestLogger] interface for inner Kaspresso usage.
@@ -403,6 +414,7 @@ data class Kaspresso(
         internal fun build(): Kaspresso {
 
             val kaspresso = Kaspresso(
+                testIdentifier = testIdentifier,
                 libLogger = libLogger,
                 testLogger = testLogger,
 
@@ -430,6 +442,7 @@ data class Kaspresso(
                     stepParams = stepParams
                 ),
 
+                stepsResultsConsumers = stepsResultsConsumers,
                 viewActionWatcherInterceptors = viewActionWatcherInterceptors,
                 viewAssertionWatcherInterceptors = viewAssertionWatcherInterceptors,
                 atomWatcherInterceptors = atomWatcherInterceptors,

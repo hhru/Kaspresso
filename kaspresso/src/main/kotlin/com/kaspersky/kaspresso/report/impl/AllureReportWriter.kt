@@ -3,7 +3,7 @@ package com.kaspersky.kaspresso.report.impl
 import com.google.gson.Gson
 import com.kaspersky.kaspresso.report.ReportWriter
 import com.kaspersky.kaspresso.testcases.models.info.TestInfo
-import com.malinskiy.marathon.steps.StepsResultsProducer
+import com.malinsky.marathon.core.steps.StepsResultsConsumer
 
 /**
  * This [com.kaspersky.kaspresso.report.ReportWriter] processes [com.kaspersky.kaspresso.testcases.models.info.TestInfo]
@@ -17,16 +17,18 @@ import com.malinskiy.marathon.steps.StepsResultsProducer
  * This logs should be processed by your's tests orchestrator (e.g. <a href="https://github.com/Malinskiy/marathon">Marathon</a>).
  */
 class AllureReportWriter(
-    private val stepsResultsProducer: StepsResultsProducer
+    private val stepsResultsConsumers: List<StepsResultsConsumer>
 ) : ReportWriter {
 
     private val stepInfoConverter: StepInfoConverter by lazy { StepInfoConverter() }
     private val gson: Gson by lazy { Gson() }
 
+
     override fun processTestResults(testInfo: TestInfo) {
         val steps = testInfo.stepInfos.map { stepInfoConverter.convert(it) }
         val stepsJson = gson.toJson(steps)
 
-        stepsResultsProducer.attachStepsResults(stepsJson)
+        stepsResultsConsumers.forEach { it.consume(testInfo.testIdentifier, stepsJson) }
     }
+
 }
