@@ -1,10 +1,9 @@
 package com.kaspersky.kaspresso.report.impl
 
 import com.google.gson.Gson
-import com.kaspersky.kaspresso.logger.UiTestLogger
 import com.kaspersky.kaspresso.report.ReportWriter
-import com.kaspersky.kaspresso.runner.MyListener
 import com.kaspersky.kaspresso.testcases.models.info.TestInfo
+import com.malinskiy.marathon.steps.StepsResultsProducer
 
 /**
  * This [com.kaspersky.kaspresso.report.ReportWriter] processes [com.kaspersky.kaspresso.testcases.models.info.TestInfo]
@@ -18,9 +17,8 @@ import com.kaspersky.kaspresso.testcases.models.info.TestInfo
  * This logs should be processed by your's tests orchestrator (e.g. <a href="https://github.com/Malinskiy/marathon">Marathon</a>).
  */
 class AllureReportWriter(
-    private val uiTestLogger: UiTestLogger
+    private val stepsResultsProducer: StepsResultsProducer
 ) : ReportWriter {
-
 
     private val stepInfoConverter: StepInfoConverter by lazy { StepInfoConverter() }
     private val gson: Gson by lazy { Gson() }
@@ -29,9 +27,6 @@ class AllureReportWriter(
         val steps = testInfo.stepInfos.map { stepInfoConverter.convert(it) }
         val stepsJson = gson.toJson(steps)
 
-        // TODO -> can we avoid static?
-
-
-        MyListener.instance.attachStepsJson(stepsJson)
+        stepsResultsProducer.attachStepsResults(stepsJson)
     }
 }

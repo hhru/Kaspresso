@@ -74,6 +74,7 @@ import com.kaspersky.kaspresso.params.FlakySafetyParams
 import com.kaspersky.kaspresso.params.Params
 import com.kaspersky.kaspresso.params.StepParams
 import com.kaspersky.kaspresso.report.impl.AllureReportWriter
+import com.malinskiy.marathon.steps.StepsResultsProducerImpl
 
 /**
  * The storage of all Kaspresso preferences and entities, such as [AdbServer], [Device] and different interceptors.
@@ -160,7 +161,9 @@ data class Kaspresso(
                     testRunWatcherInterceptors = mutableListOf(
                         TestRunLoggerWatcherInterceptor(libLogger),
                         TestRunnerScreenshotWatcherInterceptor(screenshots),
-                        BuildStepReportWatcherInterceptor(AllureReportWriter(libLogger))
+                        BuildStepReportWatcherInterceptor(
+                            AllureReportWriter(StepsResultsProducerImpl())
+                        )
                     )
 
                     failureHandler = LoggingFailureHandler(libLogger)

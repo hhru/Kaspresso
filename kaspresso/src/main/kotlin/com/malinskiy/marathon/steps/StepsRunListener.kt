@@ -1,24 +1,25 @@
-package com.kaspersky.kaspresso.runner
+package com.malinskiy.marathon.steps
 
 import android.app.Instrumentation
 import android.os.Bundle
 import android.util.Log
-import androidx.test.internal.runner.listener.InstrumentationResultPrinter.*
+import androidx.test.internal.runner.listener.InstrumentationResultPrinter
 import androidx.test.internal.runner.listener.InstrumentationRunListener
+import com.kaspersky.kaspresso.runner.TestIdentifier
+import com.kaspersky.kaspresso.runner.toTestIdentifier
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
 
 
-// TODO -- refactor this
-class MyListener : InstrumentationRunListener() {
+class StepsRunListener : InstrumentationRunListener() {
 
     companion object {
-        private const val LOG_TAG = "MyListener"
+        private const val LOG_TAG = "StepsRunListener"
         private const val INSTRUMENTATION_STATUS_KEY_STEPS_RESULTS_JSON =
             "marathon.stepsResultsJson"
         private const val EMPTY_STEPS_RESULT_JSON = "[]"
 
-        lateinit var instance: MyListener
+        internal var instance: StepsRunListener? = null
     }
 
     private val stepsJsonMap = mutableMapOf<TestIdentifier, String>()
@@ -40,28 +41,40 @@ class MyListener : InstrumentationRunListener() {
         super.testAssumptionFailure(failure)
 
         log("testAssumptionFailure | testIdentifier: ${failure.description.toTestIdentifier()}, currentNum: $currentNum")
-        sendTestStatus(REPORT_VALUE_RESULT_ASSUMPTION_FAILURE, failure.description, currentNum)
+        sendTestStatus(
+            InstrumentationResultPrinter.REPORT_VALUE_RESULT_ASSUMPTION_FAILURE,
+            failure.description,
+            currentNum
+        )
     }
 
     override fun testFailure(failure: Failure) {
         super.testFailure(failure)
 
         log("testFailure | testIdentifier: ${failure.description.toTestIdentifier()}, currentNum: $currentNum")
-        sendTestStatus(REPORT_VALUE_RESULT_FAILURE, failure.description, currentNum)
+        sendTestStatus(
+            InstrumentationResultPrinter.REPORT_VALUE_RESULT_FAILURE,
+            failure.description,
+            currentNum
+        )
     }
 
     override fun testFinished(description: Description) {
         super.testFinished(description)
 
         log("testFinished | testIdentifier: ${description.toTestIdentifier()}, currentNum: $currentNum")
-        sendTestStatus(REPORT_VALUE_RESULT_OK, description, currentNum)
+        sendTestStatus(InstrumentationResultPrinter.REPORT_VALUE_RESULT_OK, description, currentNum)
     }
 
     override fun testIgnored(description: Description) {
         super.testIgnored(description)
 
         log("testIgnored | testIdentifier: ${description.toTestIdentifier()}, currentNum: $currentNum")
-        sendTestStatus(REPORT_VALUE_RESULT_IGNORED, description, currentNum)
+        sendTestStatus(
+            InstrumentationResultPrinter.REPORT_VALUE_RESULT_IGNORED,
+            description,
+            currentNum
+        )
     }
 
 
@@ -84,11 +97,14 @@ class MyListener : InstrumentationRunListener() {
         val stepsJson = stepsJsonMap[description.toTestIdentifier()] ?: EMPTY_STEPS_RESULT_JSON
         log("Create status bundle [identifier: ${description.toTestIdentifier()}, json: $stepsJson]")
         return Bundle().apply {
-            putString(Instrumentation.REPORT_KEY_IDENTIFIER, REPORT_VALUE_ID)
-            putString(REPORT_KEY_NAME_CLASS, description.className)
-            putString(REPORT_KEY_NAME_TEST, description.methodName)
-            putInt(REPORT_KEY_NUM_TOTAL, description.testCount())
-            putInt(REPORT_KEY_NUM_CURRENT, currentNum)
+            putString(
+                Instrumentation.REPORT_KEY_IDENTIFIER,
+                InstrumentationResultPrinter.REPORT_VALUE_ID
+            )
+            putString(InstrumentationResultPrinter.REPORT_KEY_NAME_CLASS, description.className)
+            putString(InstrumentationResultPrinter.REPORT_KEY_NAME_TEST, description.methodName)
+            putInt(InstrumentationResultPrinter.REPORT_KEY_NUM_TOTAL, description.testCount())
+            putInt(InstrumentationResultPrinter.REPORT_KEY_NUM_CURRENT, currentNum)
 
             putString(
                 INSTRUMENTATION_STATUS_KEY_STEPS_RESULTS_JSON,
