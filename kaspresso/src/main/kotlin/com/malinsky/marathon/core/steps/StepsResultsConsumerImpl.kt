@@ -1,17 +1,25 @@
 package com.malinsky.marathon.core.steps
 
 import android.os.Bundle
-import android.util.Log
 import androidx.test.internal.runner.listener.InstrumentationResultPrinter.*
 import androidx.test.platform.app.InstrumentationRegistry
+import com.kaspersky.kaspresso.logger.UiTestLogger
 import com.kaspersky.kaspresso.testcases.models.TestIdentifier
-import com.kaspersky.kaspresso.testcases.models.toTestIdentifier
+import com.kaspersky.kaspresso.testcases.models.extensions.toTestIdentifier
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 
-class StepsResultsConsumerImpl : TestWatcher(), StepsResultsConsumer {
+/**
+ * This [org.junit.rules.TestWatcher] writes information about test steps into adb shell's output
+ * through [android.app.Instrumentation.sendStatus] when test ends with success or failure.
+ * When we writes unknown test events into adb shell's output they will be parsed by ddmlib as
+ * <a href="https://android.googlesource.com/platform/tools/base/+/master/ddmlib/src/main/java/com/android/ddmlib/testrunner/InstrumentationResultParser.java#358">testMetrics</a> field.
+ */
+class StepsResultsConsumerImpl(
+    private val uiTestLogger: UiTestLogger
+) : TestWatcher(), StepsResultsConsumer {
 
     companion object {
         private const val INSTRUMENTATION_KEY_STEPS_RESULTS_JSON = "marathon.stepsResultsJson"
@@ -19,40 +27,41 @@ class StepsResultsConsumerImpl : TestWatcher(), StepsResultsConsumer {
     }
 
 
-    private val stepsResultsJsonMap = mutableMapOf<TestIdentifier, String>()
+    private var stepsResultsJson = EMPTY_STEPS_RESULTS_JSON
 
 
     override fun consume(testIdentifier: TestIdentifier, stepsResultsJson: String) {
-        Log.i("STEPS CONSUMER", "consume [$testIdentifier]")
-        stepsResultsJsonMap[testIdentifier] = stepsResultsJson
+        uiTestLogger.d("Consume steps json from $testIdentifier")
+        this.stepsResultsJson = stepsResultsJson
     }
 
 
     override fun failed(e: Throwable, description: Description) {
         super.failed(e, description)
+
         val testIdentifier = description.toTestIdentifier()
-        Log.i("STEPS CONSUMER", "failed [$testIdentifier]")
+        uiTestLogger.d("$testIdentifier failed")
         sendStatus(REPORT_VALUE_RESULT_FAILURE, description)
     }
 
     override fun skipped(e: AssumptionViolatedException, description: Description) {
         super.skipped(e, description)
+
         val testIdentifier = description.toTestIdentifier()
-        Log.i("STEPS CONSUMER", "skipped [$testIdentifier]")
+        uiTestLogger.d("$testIdentifier skipped")
         sendStatus(REPORT_VALUE_RESULT_ASSUMPTION_FAILURE, description)
     }
 
     override fun succeeded(description: Description) {
         super.succeeded(description)
+
         val testIdentifier = description.toTestIdentifier()
-        Log.i("STEPS CONSUMER", "succeeded [$testIdentifier]")
+        uiTestLogger.d("$testIdentifier succeeded")
         sendStatus(REPORT_VALUE_RESULT_OK, description)
     }
 
 
     private fun sendStatus(code: Int, description: Description) {
-        val stepsResultsJson = stepsResultsJsonMap[description.toTestIdentifier()]
-            ?: EMPTY_STEPS_RESULTS_JSON
         InstrumentationRegistry.getInstrumentation()
             .sendStatus(code, createBundle(description, stepsResultsJson))
     }

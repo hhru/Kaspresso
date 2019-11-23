@@ -1,6 +1,5 @@
 package com.kaspersky.kaspresso.testcases.api.testcase
 
-import android.util.Log
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.TestRunLoggerWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.report.BuildStepReportWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.TestRunnerScreenshotWatcherInterceptor
@@ -12,7 +11,7 @@ import com.kaspersky.kaspresso.testcases.core.sections.MainTestSection
 import com.kaspersky.kaspresso.testcases.core.sections.TransformSection
 import com.kaspersky.kaspresso.testcases.core.testcontext.BaseTestContext
 import com.kaspersky.kaspresso.testcases.models.TestBody
-import com.kaspersky.kaspresso.testcases.models.toTestIdentifier
+import com.kaspersky.kaspresso.testcases.models.extensions.toTestIdentifier
 import com.malinsky.marathon.core.steps.StepsResultsConsumerImpl
 import org.junit.Rule
 import org.junit.rules.TestWatcher
@@ -34,15 +33,22 @@ abstract class BaseTestCase<InitData, Data>(
 
     internal lateinit var kaspresso: Kaspresso
 
+    /**
+     * This rule is using for writing steps information from test method into adb shell output, when test
+     * was ended successfully or failed.
+     */
     @get:Rule
-    internal val stepsResultsConsumer = StepsResultsConsumerImpl()
+    internal val stepsResultsConsumer = StepsResultsConsumerImpl(kaspressoBuilder.libLogger)
 
+    /**
+     * This rule is using for binding [com.kaspersky.kaspresso.testcases.models.TestIdentifier] with each test method
+     * in the current test case. With this identifier we can write additional information into adb shell output
+     * correctly, e.g. steps information.
+     */
     @get:Rule
     internal val testWatcher = object : TestWatcher() {
         override fun starting(description: Description) {
             super.starting(description)
-
-            Log.i("BASE_TEST_CASE", "starting [${description.toTestIdentifier()}]")
 
             kaspressoBuilder.testIdentifier = description.toTestIdentifier()
             kaspressoBuilder.stepsResultsConsumers = listOf(stepsResultsConsumer)
