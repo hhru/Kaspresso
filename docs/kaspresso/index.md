@@ -54,7 +54,9 @@
 | [com.kaspersky.kaspresso.testcases.core.sections](com.kaspersky.kaspresso.testcases.core.sections/index.md) |  |
 | [com.kaspersky.kaspresso.testcases.core.testcontext](com.kaspersky.kaspresso.testcases.core.testcontext/index.md) |  |
 | [com.kaspersky.kaspresso.testcases.models](com.kaspersky.kaspresso.testcases.models/index.md) |  |
+| [com.kaspersky.kaspresso.testcases.models.extensions](com.kaspersky.kaspresso.testcases.models.extensions/index.md) |  |
 | [com.kaspersky.kaspresso.testcases.models.info](com.kaspersky.kaspresso.testcases.models.info/index.md) |  |
+| [com.malinsky.marathon.core.steps](com.malinsky.marathon.core.steps/index.md) |  |
 | [io.reactivex.exceptions](io.reactivex.exceptions/index.md) |  |
 
 ### Index

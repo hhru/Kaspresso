@@ -15,5 +15,5 @@
 | [status](status.md) | `abstract val status: `[`StepStatus`](../../com.kaspersky.kaspresso.testcases.models/-step-status/index.md) |
 | [stopTime](stop-time.md) | `abstract val stopTime: `[`Long`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html) |
 | [subSteps](sub-steps.md) | `abstract val subSteps: `[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`StepInfo`](./index.md)`>` |
-| [testClassName](test-class-name.md) | `abstract val testClassName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [testIdentifier](test-identifier.md) | `abstract val testIdentifier: `[`TestIdentifier`](../../com.kaspersky.kaspresso.testcases.models/-test-identifier/index.md) |
 | [throwable](throwable.md) | `abstract val throwable: `[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`?` |
