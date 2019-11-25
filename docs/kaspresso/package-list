@@ -1,6 +1,6 @@
 $dokka.format:gfm
 $dokka.linkExtension:md
-
+$dokka.location:com.kaspersky.kaspresso.testcases.models.extensions$toTestIdentifier(org.junit.runner.Description)com.kaspersky.kaspresso.testcases.models.extensions/org.junit.runner.-description/to-test-identifier.md
 androidx.test.espresso.web.assertion
 com.kaspersky.kaspresso.annotations
 com.kaspersky.kaspresso.autoscroll
@@ -51,5 +51,7 @@ com.kaspersky.kaspresso.testcases.api.testcaserule
 com.kaspersky.kaspresso.testcases.core.sections
 com.kaspersky.kaspresso.testcases.core.testcontext
 com.kaspersky.kaspresso.testcases.models
+com.kaspersky.kaspresso.testcases.models.extensions
 com.kaspersky.kaspresso.testcases.models.info
+com.malinsky.marathon.core.steps
 io.reactivex.exceptions
