@@ -2,7 +2,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
 ext {
-    ver = '1.0.3'
+    ver = '1.0.4'
     groupId = 'ru.hh.kaspresso'
     artifactId = 'kaspresso'
     repo = 'maven'
