@@ -49,6 +49,7 @@ com.kaspersky.kaspresso.testcases.api.scenario
 com.kaspersky.kaspresso.testcases.api.testcase
 com.kaspersky.kaspresso.testcases.api.testcaserule
 com.kaspersky.kaspresso.testcases.core.sections
+com.kaspersky.kaspresso.testcases.core.testassistants
 com.kaspersky.kaspresso.testcases.core.testcontext
 com.kaspersky.kaspresso.testcases.models
 com.kaspersky.kaspresso.testcases.models.extensions

@@ -2,9 +2,7 @@ package com.kaspersky.kaspresso.testcases.api.testcase
 
 import com.kaspersky.kaspresso.device.Device
 import com.kaspersky.kaspresso.device.server.AdbServer
-import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.TestRunLoggerWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.report.BuildStepReportWatcherInterceptor
-import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.TestRunnerScreenshotWatcherInterceptor
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.logger.UiTestLogger
 import com.kaspersky.kaspresso.report.impl.AllureReportWriter
@@ -55,24 +53,28 @@ abstract class BaseTestCase<InitData, Data>(
         override fun starting(description: Description) {
             super.starting(description)
 
-            kaspressoBuilder.testIdentifier = description.toTestIdentifier()
-            kaspressoBuilder.stepsResultsConsumers = listOf(stepsResultsConsumer)
-            kaspressoBuilder.testRunWatcherInterceptors = mutableListOf(
-                TestRunLoggerWatcherInterceptor(kaspressoBuilder.libLogger),
-                TestRunnerScreenshotWatcherInterceptor(kaspressoBuilder.screenshots),
-                BuildStepReportWatcherInterceptor(AllureReportWriter(kaspressoBuilder.stepsResultsConsumers))
-            )
-
-            kaspresso = kaspressoBuilder.build()
+            kaspresso = kaspressoBuilder
+                .apply {
+                    testIdentifier = description.toTestIdentifier()
+                    stepsResultsConsumers = listOf(stepsResultsConsumer)
+                    testRunWatcherInterceptors.add(
+                        BuildStepReportWatcherInterceptor(AllureReportWriter(kaspressoBuilder.stepsResultsConsumers))
+                    )
+                }
+                .build()
         }
     }
 
     private val testCaseName = javaClass.simpleName
-    private val testAssistantsProvider = TestAssistantsProviderImpl(kaspresso)
+    private val testAssistantsProvider: TestAssistantsProviderImpl by lazy {
+        TestAssistantsProviderImpl(
+            kaspresso
+        )
+    }
 
-    override val adbServer: AdbServer = testAssistantsProvider.adbServer
-    override val device: Device = testAssistantsProvider.device
-    override val testLogger: UiTestLogger = testAssistantsProvider.testLogger
+    override val adbServer: AdbServer by lazy { testAssistantsProvider.adbServer }
+    override val device: Device by lazy { testAssistantsProvider.device }
+    override val testLogger: UiTestLogger by lazy { testAssistantsProvider.testLogger }
 
     /**
      * Starts the building of a test, sets the [BeforeTestSection] actions and returns an existing instance of
