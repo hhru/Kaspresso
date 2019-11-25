@@ -1,15 +1,21 @@
 package com.kaspersky.kaspresso.testcases.api.testcase
 
+import com.kaspersky.kaspresso.device.Device
+import com.kaspersky.kaspresso.device.server.AdbServer
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.TestRunLoggerWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.report.BuildStepReportWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.TestRunnerScreenshotWatcherInterceptor
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
+import com.kaspersky.kaspresso.logger.UiTestLogger
 import com.kaspersky.kaspresso.report.impl.AllureReportWriter
 import com.kaspersky.kaspresso.testcases.core.sections.AfterTestSection
 import com.kaspersky.kaspresso.testcases.core.sections.BeforeTestSection
 import com.kaspersky.kaspresso.testcases.core.sections.MainTestSection
 import com.kaspersky.kaspresso.testcases.core.sections.TransformSection
+import com.kaspersky.kaspresso.testcases.core.testassistants.TestAssistantsProvider
+import com.kaspersky.kaspresso.testcases.core.testassistants.TestAssistantsProviderImpl
 import com.kaspersky.kaspresso.testcases.core.testcontext.BaseTestContext
+import com.kaspersky.kaspresso.testcases.core.testcontext.TestContext
 import com.kaspersky.kaspresso.testcases.models.TestBody
 import com.kaspersky.kaspresso.testcases.models.extensions.toTestIdentifier
 import com.malinsky.marathon.core.steps.StepsResultsConsumerImpl
@@ -28,8 +34,7 @@ import org.junit.runner.Description
 abstract class BaseTestCase<InitData, Data>(
     kaspressoBuilder: Kaspresso.Builder = Kaspresso.Builder.default(),
     private val dataProducer: (((InitData.() -> Unit)?) -> Data)
-) {
-    private val testCaseName = javaClass.simpleName
+) : TestAssistantsProvider {
 
     internal lateinit var kaspresso: Kaspresso
 
@@ -62,6 +67,13 @@ abstract class BaseTestCase<InitData, Data>(
         }
     }
 
+    private val testCaseName = javaClass.simpleName
+    private val testAssistantsProvider = TestAssistantsProviderImpl(kaspresso)
+
+    override val adbServer: AdbServer = testAssistantsProvider.adbServer
+    override val device: Device = testAssistantsProvider.device
+    override val testLogger: UiTestLogger = testAssistantsProvider.testLogger
+
     /**
      * Starts the building of a test, sets the [BeforeTestSection] actions and returns an existing instance of
      * [AfterTestSection] to continue the building a test.
@@ -74,9 +86,7 @@ abstract class BaseTestCase<InitData, Data>(
         testName: String = testCaseName,
         actions: BaseTestContext.() -> Unit
     ): AfterTestSection<InitData, Data> {
-
         val testBodyBuilder = createBaseTestBodyBuilder(testName)
-
         return BeforeTestSection(kaspresso, testBodyBuilder).beforeTest(actions)
     }
 
@@ -96,8 +106,22 @@ abstract class BaseTestCase<InitData, Data>(
         val testBodyBuilder = createBaseTestBodyBuilder(testName).apply {
             initActions = actions
         }
-
         return MainTestSection(kaspresso, testBodyBuilder)
+    }
+
+    /**
+     * Sets [com.kaspersky.kaspresso.testcases.core.sections.MainTestSection] steps, creates an instance of
+     * [MainTestSection] and runs it
+     *
+     * @param testName a name of the test.
+     * @param steps actions to invoke in main test section.
+     */
+    protected fun run(
+        testName: String = testCaseName,
+        steps: TestContext<Data>.() -> Unit
+    ) {
+        val testBodyBuilder = createBaseTestBodyBuilder(testName)
+        MainTestSection(kaspresso, testBodyBuilder).run(steps)
     }
 
     private fun createBaseTestBodyBuilder(testName: String): TestBody.Builder<InitData, Data> {

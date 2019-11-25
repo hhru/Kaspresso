@@ -11,7 +11,10 @@ import java.io.StringWriter
 internal fun Throwable.getStackTraceAsString(): String =
     StringWriter().also { printStackTrace(PrintWriter(it)) }.toString()
 
-internal inline fun <reified T : Throwable> invokeSafely(exceptions: MutableList<T>, action: () -> Unit) {
+internal inline fun <reified T : Throwable> invokeSafely(
+    exceptions: MutableList<T>,
+    action: () -> Unit
+) {
     try {
         action.invoke()
     } catch (e: Throwable) {
