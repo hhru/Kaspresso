@@ -2,12 +2,12 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
 ext {
-    ver = '1.0.1'
-    groupId = 'com.kaspersky.android-components'
+    ver = '1.0.3'
+    groupId = 'ru.hh.kaspresso'
     artifactId = 'kaspresso'
-    repo = 'Kaspresso'
+    repo = 'maven'
     repoName = 'Kaspresso'
-    vcsUrl = 'https://github.com/KasperskyLab/Kaspresso.git'
+    vcsUrl = 'https://github.com/hhru/Kaspresso.git'
 }
 
 publishing {
@@ -37,9 +37,12 @@ publishing {
     }
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 bintray {
-    user = property('bintrayuser')
-    key = property('bintraykey')
+    user = properties.getProperty("bintrayUser")
+    key = properties.getProperty("bintrayApiKey")
     publications = ['Kaspresso']
 
     pkg {
