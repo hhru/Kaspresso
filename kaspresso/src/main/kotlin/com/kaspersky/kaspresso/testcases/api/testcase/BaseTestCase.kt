@@ -68,11 +68,15 @@ abstract class BaseTestCase<InitData, Data>(
     }
 
     private val testCaseName = javaClass.simpleName
-    private val testAssistantsProvider = TestAssistantsProviderImpl(kaspresso)
+    private val testAssistantsProvider: TestAssistantsProviderImpl by lazy {
+        TestAssistantsProviderImpl(
+            kaspresso
+        )
+    }
 
-    override val adbServer: AdbServer = testAssistantsProvider.adbServer
-    override val device: Device = testAssistantsProvider.device
-    override val testLogger: UiTestLogger = testAssistantsProvider.testLogger
+    override val adbServer: AdbServer by lazy { testAssistantsProvider.adbServer }
+    override val device: Device by lazy { testAssistantsProvider.device }
+    override val testLogger: UiTestLogger by lazy { testAssistantsProvider.testLogger }
 
     /**
      * Starts the building of a test, sets the [BeforeTestSection] actions and returns an existing instance of
