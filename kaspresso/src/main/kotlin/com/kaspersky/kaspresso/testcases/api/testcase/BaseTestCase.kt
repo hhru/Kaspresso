@@ -53,9 +53,11 @@ abstract class BaseTestCase<InitData, Data>(
         override fun starting(description: Description) {
             super.starting(description)
 
+            val testId = description.toTestIdentifier()
+            kaspressoBuilder.libLogger.i("Starting test [$testId]")
             kaspresso = kaspressoBuilder
                 .apply {
-                    testIdentifier = description.toTestIdentifier()
+                    testIdentifier = testId
                     stepsResultsConsumers = listOf(stepsResultsConsumer)
                     testRunWatcherInterceptors.add(
                         BuildStepReportWatcherInterceptor(AllureReportWriter(kaspressoBuilder.stepsResultsConsumers))
