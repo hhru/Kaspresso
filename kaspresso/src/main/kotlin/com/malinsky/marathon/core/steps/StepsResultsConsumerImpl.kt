@@ -41,7 +41,7 @@ class StepsResultsConsumerImpl(
     private var stepsResultsJson = EMPTY_STEPS_RESULTS_JSON
 
     override fun consume(testIdentifier: TestIdentifier, stepsResultsJson: String) {
-        uiTestLogger.d("Consume steps json from $testIdentifier")
+        uiTestLogger.d("Consume steps json from $testIdentifier | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
         this.stepsResultsJson = stepsResultsJson
     }
 
@@ -49,7 +49,7 @@ class StepsResultsConsumerImpl(
         super.failed(e, description)
 
         val testIdentifier = description.toTestIdentifier()
-        uiTestLogger.d("$testIdentifier failed")
+        uiTestLogger.d("$testIdentifier failed | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
         sendStatus(REPORT_VALUE_RESULT_FAILURE, description, e)
     }
 
@@ -57,7 +57,7 @@ class StepsResultsConsumerImpl(
         super.skipped(e, description)
 
         val testIdentifier = description.toTestIdentifier()
-        uiTestLogger.d("$testIdentifier skipped")
+        uiTestLogger.d("$testIdentifier skipped | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
         sendStatus(REPORT_VALUE_RESULT_ASSUMPTION_FAILURE, description, e)
     }
 
@@ -65,7 +65,7 @@ class StepsResultsConsumerImpl(
         super.succeeded(description)
 
         val testIdentifier = description.toTestIdentifier()
-        uiTestLogger.d("$testIdentifier succeeded")
+        uiTestLogger.d("$testIdentifier succeeded | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
         sendStatus(REPORT_VALUE_RESULT_OK, description)
     }
 
