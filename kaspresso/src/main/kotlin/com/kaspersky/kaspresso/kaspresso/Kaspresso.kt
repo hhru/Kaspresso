@@ -252,8 +252,7 @@ data class Kaspresso(
         /**
          * Holds an implementation of [HackPermissions] interface. If it was not specified, the default implementation is used.
          */
-        var hackPermissions: HackPermissions =
-            HackPermissionsImpl(instrumentation.uiAutomation, libLogger)
+        var hackPermissions: HackPermissions = HackPermissionsImpl(instrumentation.uiAutomation, libLogger)
 
         /**
          * Holds an implementation of [Exploit] interface. If it was not specified, the default implementation is used.
@@ -290,8 +289,7 @@ data class Kaspresso(
          * These interceptors are called by [com.kaspersky.kaspresso.proxy.ViewActionProxy]
          * before actual [androidx.test.espresso.ViewAction.perform] call.
          */
-        var viewActionWatcherInterceptors: MutableList<ViewActionWatcherInterceptor> =
-            mutableListOf()
+        var viewActionWatcherInterceptors: MutableList<ViewActionWatcherInterceptor> = mutableListOf()
 
         /**
          * Holds the list of [ViewAssertionWatcherInterceptor]s.
@@ -299,8 +297,7 @@ data class Kaspresso(
          * These interceptors are called by [com.kaspersky.kaspresso.proxy.ViewAssertionProxy]
          * before actual [androidx.test.espresso.ViewAssertion.check] call.
          */
-        var viewAssertionWatcherInterceptors: MutableList<ViewAssertionWatcherInterceptor> =
-            mutableListOf()
+        var viewAssertionWatcherInterceptors: MutableList<ViewAssertionWatcherInterceptor> = mutableListOf()
 
         /**
          * Holds the list of [AtomWatcherInterceptor]s.
@@ -316,8 +313,7 @@ data class Kaspresso(
          * These interceptors are called by [androidx.test.espresso.web.assertion.WebAssertionProxy]
          * before actual [androidx.test.espresso.web.assertion.WebAssertion.checkResult] call.
          */
-        var webAssertionWatcherInterceptors: MutableList<WebAssertionWatcherInterceptor> =
-            mutableListOf()
+        var webAssertionWatcherInterceptors: MutableList<WebAssertionWatcherInterceptor> = mutableListOf()
 
         /**
          * Holds the list of [ViewBehaviorInterceptor]s.
