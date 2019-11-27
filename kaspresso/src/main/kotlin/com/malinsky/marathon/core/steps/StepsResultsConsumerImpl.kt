@@ -13,11 +13,11 @@ import com.kaspersky.kaspresso.logger.UiTestLogger
 import com.kaspersky.kaspresso.logger.UiTestLoggerImpl
 import com.kaspersky.kaspresso.testcases.models.TestIdentifier
 import com.kaspersky.kaspresso.testcases.models.extensions.toTestIdentifier
+import java.io.PrintWriter
+import java.io.StringWriter
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
-import java.io.PrintWriter
-import java.io.StringWriter
 
 /**
  * This [org.junit.rules.TestWatcher] writes information about test steps into adb shell's output
@@ -88,7 +88,6 @@ class StepsResultsConsumerImpl(
         }
     }
 
-
     private fun logTestStatus(description: Description, message: String) {
         val isStepsJsonEmpty = stepsResultsJson == EMPTY_STEPS_RESULTS_JSON
         logger.d("Test [${description.toTestIdentifier()}] $message. Is steps JSON empty: $isStepsJsonEmpty")
@@ -102,5 +101,4 @@ class StepsResultsConsumerImpl(
 
         return trace.takeIf { it.length < MAX_TRACE_SIZE } ?: trace.substring(0, MAX_TRACE_SIZE)
     }
-
 }
