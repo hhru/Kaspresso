@@ -55,7 +55,6 @@ import com.kaspersky.kaspresso.interceptors.watcher.testcase.StepWatcherIntercep
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.TestRunWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.LoggingStepWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.TestRunLoggerWatcherInterceptor
-import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.report.BuildStepReportWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.ScreenshotStepWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.TestRunnerScreenshotWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.view.AtomWatcherInterceptor
@@ -73,7 +72,6 @@ import com.kaspersky.kaspresso.params.ContinuouslyParams
 import com.kaspersky.kaspresso.params.FlakySafetyParams
 import com.kaspersky.kaspresso.params.Params
 import com.kaspersky.kaspresso.params.StepParams
-import com.kaspersky.kaspresso.report.impl.AllureReportWriter
 import com.kaspersky.kaspresso.testcases.models.TestIdentifier
 import com.malinsky.marathon.core.steps.StepsResultsConsumer
 
@@ -163,8 +161,7 @@ data class Kaspresso(
 
                     testRunWatcherInterceptors = mutableListOf(
                         TestRunLoggerWatcherInterceptor(libLogger),
-                        TestRunnerScreenshotWatcherInterceptor(screenshots),
-                        BuildStepReportWatcherInterceptor(AllureReportWriter(stepsResultsConsumers))
+                        TestRunnerScreenshotWatcherInterceptor(screenshots)
                     )
 
                     failureHandler = LoggingFailureHandler(libLogger)
@@ -255,7 +252,8 @@ data class Kaspresso(
         /**
          * Holds an implementation of [HackPermissions] interface. If it was not specified, the default implementation is used.
          */
-        var hackPermissions: HackPermissions = HackPermissionsImpl(instrumentation.uiAutomation, libLogger)
+        var hackPermissions: HackPermissions =
+            HackPermissionsImpl(instrumentation.uiAutomation, libLogger)
 
         /**
          * Holds an implementation of [Exploit] interface. If it was not specified, the default implementation is used.
@@ -292,7 +290,8 @@ data class Kaspresso(
          * These interceptors are called by [com.kaspersky.kaspresso.proxy.ViewActionProxy]
          * before actual [androidx.test.espresso.ViewAction.perform] call.
          */
-        var viewActionWatcherInterceptors: MutableList<ViewActionWatcherInterceptor> = mutableListOf()
+        var viewActionWatcherInterceptors: MutableList<ViewActionWatcherInterceptor> =
+            mutableListOf()
 
         /**
          * Holds the list of [ViewAssertionWatcherInterceptor]s.
@@ -300,7 +299,8 @@ data class Kaspresso(
          * These interceptors are called by [com.kaspersky.kaspresso.proxy.ViewAssertionProxy]
          * before actual [androidx.test.espresso.ViewAssertion.check] call.
          */
-        var viewAssertionWatcherInterceptors: MutableList<ViewAssertionWatcherInterceptor> = mutableListOf()
+        var viewAssertionWatcherInterceptors: MutableList<ViewAssertionWatcherInterceptor> =
+            mutableListOf()
 
         /**
          * Holds the list of [AtomWatcherInterceptor]s.
@@ -316,7 +316,8 @@ data class Kaspresso(
          * These interceptors are called by [androidx.test.espresso.web.assertion.WebAssertionProxy]
          * before actual [androidx.test.espresso.web.assertion.WebAssertion.checkResult] call.
          */
-        var webAssertionWatcherInterceptors: MutableList<WebAssertionWatcherInterceptor> = mutableListOf()
+        var webAssertionWatcherInterceptors: MutableList<WebAssertionWatcherInterceptor> =
+            mutableListOf()
 
         /**
          * Holds the list of [ViewBehaviorInterceptor]s.
