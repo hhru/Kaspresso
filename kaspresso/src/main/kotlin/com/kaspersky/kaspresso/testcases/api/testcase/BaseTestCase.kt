@@ -41,7 +41,7 @@ abstract class BaseTestCase<InitData, Data>(
      * was ended successfully or failed.
      */
     @get:Rule
-    internal val stepsResultsConsumer = StepsResultsConsumerImpl(kaspressoBuilder.libLogger)
+    internal val stepsResultsConsumer = StepsResultsConsumerImpl()
 
     /**
      * This rule is using for binding [com.kaspersky.kaspresso.testcases.models.TestIdentifier] with each test method
@@ -53,11 +53,9 @@ abstract class BaseTestCase<InitData, Data>(
         override fun starting(description: Description) {
             super.starting(description)
 
-            val testId = description.toTestIdentifier()
-            kaspressoBuilder.libLogger.i("Starting test [$testId]")
             kaspresso = kaspressoBuilder
                 .apply {
-                    testIdentifier = testId
+                    testIdentifier = description.toTestIdentifier()
                     stepsResultsConsumers = listOf(stepsResultsConsumer)
                     testRunWatcherInterceptors.add(
                         BuildStepReportWatcherInterceptor(AllureReportWriter(kaspressoBuilder.stepsResultsConsumers))

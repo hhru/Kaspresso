@@ -10,6 +10,7 @@ import androidx.test.internal.runner.listener.InstrumentationResultPrinter.REPOR
 import androidx.test.internal.runner.listener.InstrumentationResultPrinter.REPORT_VALUE_RESULT_OK
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kaspersky.kaspresso.logger.UiTestLogger
+import com.kaspersky.kaspresso.logger.UiTestLoggerImpl
 import com.kaspersky.kaspresso.testcases.models.TestIdentifier
 import com.kaspersky.kaspresso.testcases.models.extensions.toTestIdentifier
 import org.junit.AssumptionViolatedException
@@ -27,10 +28,12 @@ import java.io.StringWriter
  * This testMetrics should be processed by your's tests orchestrator (e.g. <a href="https://github.com/Malinskiy/marathon">Marathon</a>).
  */
 class StepsResultsConsumerImpl(
-    private val uiTestLogger: UiTestLogger
+    private val logger: UiTestLogger = UiTestLoggerImpl(LOG_TAG)
 ) : TestWatcher(), StepsResultsConsumer {
 
     companion object {
+        private const val LOG_TAG = "StepsResultsConsumerImpl"
+
         private const val INSTRUMENTATION_KEY_STEPS_RESULTS_JSON = "marathon.stepsResultsJson"
         private const val EMPTY_STEPS_RESULTS_JSON = "[]"
 
@@ -41,31 +44,28 @@ class StepsResultsConsumerImpl(
     private var stepsResultsJson = EMPTY_STEPS_RESULTS_JSON
 
     override fun consume(testIdentifier: TestIdentifier, stepsResultsJson: String) {
-        uiTestLogger.d("Consume steps json from $testIdentifier | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
+        logger.d("Consume steps JSON from test [$testIdentifier]")
         this.stepsResultsJson = stepsResultsJson
     }
 
     override fun failed(e: Throwable, description: Description) {
         super.failed(e, description)
 
-        val testIdentifier = description.toTestIdentifier()
-        uiTestLogger.d("$testIdentifier failed | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
+        logTestStatus(description, "failed")
         sendStatus(REPORT_VALUE_RESULT_FAILURE, description, e)
     }
 
     override fun skipped(e: AssumptionViolatedException, description: Description) {
         super.skipped(e, description)
 
-        val testIdentifier = description.toTestIdentifier()
-        uiTestLogger.d("$testIdentifier skipped | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
+        logTestStatus(description, "skipped")
         sendStatus(REPORT_VALUE_RESULT_ASSUMPTION_FAILURE, description, e)
     }
 
     override fun succeeded(description: Description) {
         super.succeeded(description)
 
-        val testIdentifier = description.toTestIdentifier()
-        uiTestLogger.d("$testIdentifier succeeded | is steps json empty: ${stepsResultsJson == EMPTY_STEPS_RESULTS_JSON}")
+        logTestStatus(description, "succeeded")
         sendStatus(REPORT_VALUE_RESULT_OK, description)
     }
 
@@ -88,6 +88,11 @@ class StepsResultsConsumerImpl(
         }
     }
 
+
+    private fun logTestStatus(description: Description, message: String) {
+        val isStepsJsonEmpty = stepsResultsJson == EMPTY_STEPS_RESULTS_JSON
+        logger.d("Test [${description.toTestIdentifier()}] $message. Is steps JSON empty: $isStepsJsonEmpty")
+    }
 
     private fun Throwable.getTrace(): String {
         val stringWriter = StringWriter()
