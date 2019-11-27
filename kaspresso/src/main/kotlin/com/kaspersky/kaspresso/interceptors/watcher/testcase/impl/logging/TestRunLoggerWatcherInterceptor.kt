@@ -18,7 +18,7 @@ class TestRunLoggerWatcherInterceptor(
      * @param testInfo the test info to log.
      */
     override fun onBeforeSectionStarted(testInfo: TestInfo) {
-        logger.section("BEFORE TEST SECTION")
+        logger.section("BEFORE TEST SECTION [${testInfo.testIdentifier}]")
     }
 
     /**
@@ -28,7 +28,7 @@ class TestRunLoggerWatcherInterceptor(
      * @param throwable the error occurred to log.
      */
     override fun onBeforeSectionFinishedFailed(testInfo: TestInfo, throwable: Throwable) {
-        logger.section("BEFORE TEST SECTION FAILED")
+        logger.section("BEFORE TEST SECTION FAILED [${testInfo.testIdentifier}]")
     }
 
     /**
@@ -37,7 +37,7 @@ class TestRunLoggerWatcherInterceptor(
      * @param testInfo the test info to log.
      */
     override fun onMainSectionStarted(testInfo: TestInfo) {
-        logger.section("TEST SECTION")
+        logger.section("TEST SECTION [${testInfo.testIdentifier}]")
     }
 
     /**
@@ -46,7 +46,7 @@ class TestRunLoggerWatcherInterceptor(
      * @param testInfo the test info to log.
      */
     override fun onAfterSectionStarted(testInfo: TestInfo) {
-        logger.section("AFTER TEST SECTION")
+        logger.section("AFTER TEST SECTION [${testInfo.testIdentifier}]")
     }
 
     /**
@@ -56,7 +56,7 @@ class TestRunLoggerWatcherInterceptor(
      * @param throwable the error occurred to log.
      */
     override fun onAfterSectionFinishedFailed(testInfo: TestInfo, throwable: Throwable) {
-        logger.section("AFTER TEST SECTION FAILED")
+        logger.section("AFTER TEST SECTION FAILED [${testInfo.testIdentifier}]")
     }
 
     /**
@@ -66,6 +66,6 @@ class TestRunLoggerWatcherInterceptor(
      * @param success the while test was finished successfully or not.
      */
     override fun onTestFinished(testInfo: TestInfo, success: Boolean) {
-        logger.section(if (success) "TEST PASSED" else "TEST FAILED")
+        logger.section(if (success) "TEST PASSED [${testInfo.testIdentifier}]" else "TEST FAILED [${testInfo.testIdentifier}]")
     }
 }

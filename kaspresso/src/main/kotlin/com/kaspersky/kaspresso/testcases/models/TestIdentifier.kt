@@ -7,4 +7,10 @@ package com.kaspersky.kaspresso.testcases.models
 data class TestIdentifier(
     val className: String,
     val methodName: String
-)
+) {
+
+    override fun toString(): String {
+        return "className: $className, methodName: $methodName"
+    }
+
+}
