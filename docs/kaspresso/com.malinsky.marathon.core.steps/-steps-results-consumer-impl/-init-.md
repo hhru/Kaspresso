@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`StepsResultsConsumerImpl(uiTestLogger: `[`UiTestLogger`](../../com.kaspersky.kaspresso.logger/-ui-test-logger.md)`)`
+`StepsResultsConsumerImpl(logger: `[`UiTestLogger`](../../com.kaspersky.kaspresso.logger/-ui-test-logger.md)` = UiTestLoggerImpl(LOG_TAG))`
 
 This [org.junit.rules.TestWatcher](#) writes information about test steps into adb shell's output
 through [android.app.Instrumentation.sendStatus](https://developer.android.com/reference/android/app/Instrumentation.html#sendStatus(int, android.os.Bundle)) when test ends with success or failure.
