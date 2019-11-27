@@ -55,7 +55,6 @@ import com.kaspersky.kaspresso.interceptors.watcher.testcase.StepWatcherIntercep
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.TestRunWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.LoggingStepWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.logging.TestRunLoggerWatcherInterceptor
-import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.report.BuildStepReportWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.ScreenshotStepWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.testcase.impl.screenshot.TestRunnerScreenshotWatcherInterceptor
 import com.kaspersky.kaspresso.interceptors.watcher.view.AtomWatcherInterceptor
@@ -73,7 +72,6 @@ import com.kaspersky.kaspresso.params.ContinuouslyParams
 import com.kaspersky.kaspresso.params.FlakySafetyParams
 import com.kaspersky.kaspresso.params.Params
 import com.kaspersky.kaspresso.params.StepParams
-import com.kaspersky.kaspresso.report.impl.AllureReportWriter
 import com.kaspersky.kaspresso.testcases.models.TestIdentifier
 import com.malinsky.marathon.core.steps.StepsResultsConsumer
 
@@ -163,8 +161,7 @@ data class Kaspresso(
 
                     testRunWatcherInterceptors = mutableListOf(
                         TestRunLoggerWatcherInterceptor(libLogger),
-                        TestRunnerScreenshotWatcherInterceptor(screenshots),
-                        BuildStepReportWatcherInterceptor(AllureReportWriter(stepsResultsConsumers))
+                        TestRunnerScreenshotWatcherInterceptor(screenshots)
                     )
 
                     failureHandler = LoggingFailureHandler(libLogger)

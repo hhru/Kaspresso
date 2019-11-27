@@ -41,7 +41,7 @@ abstract class BaseTestCase<InitData, Data>(
      * was ended successfully or failed.
      */
     @get:Rule
-    internal val stepsResultsConsumer = StepsResultsConsumerImpl(kaspressoBuilder.libLogger)
+    internal val stepsResultsConsumer = StepsResultsConsumerImpl()
 
     /**
      * This rule is using for binding [com.kaspersky.kaspresso.testcases.models.TestIdentifier] with each test method
